@@ -1,0 +1,23 @@
+let game_board = document.getElementById("game_board");
+
+let Countries = []
+let States = []
+
+const board_width = document.getElementById("game_board").width;
+const board_height = document.getElementById("game_board").height;
+
+const state_size = 20;
+
+const ctx = game_board.getContext("2d");
+ctx.font = "30px Arial";
+
+const img = new Image();
+img.src = "img/map.jpeg";
+
+let turn = 1;
+
+game_speed = 1000 //ms
+
+let industry_avg = 1;
+let military_avg = 1;
+let income_avg = 1;

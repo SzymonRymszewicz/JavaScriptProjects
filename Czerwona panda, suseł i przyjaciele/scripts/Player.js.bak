@@ -1,0 +1,464 @@
+class Player { 
+	
+	constructor(id, color) {
+		this.id = id;
+		this.position = 0;
+		this.money = 1500;
+		this.did_throw = false;
+		this.is_in_prison = false;
+		
+		this.cards_owned = [];
+		this.colors_owned = [];
+		
+		this.player = document.createElement("div");
+		
+		this.player.id = "player" + this.id;
+		
+		this.player.style.backgroundColor = color;
+		
+		this.player.style.width = 30;
+		this.player.style.height = 30;
+		
+		this.player.style.outline = "2px solid black"
+		this.player.style.outlineOffset = "-2px";
+		
+		this.player.style.margin = 1;
+		
+		this.roll_max = 6;
+		this.luck = false;
+		
+		this.player.style.position = "relative";
+		this.player.style.left = "0%";
+		this.player.style.top = "40%";
+		this.player.style.float = "left";
+		
+		Cards[0].card.appendChild(this.player);
+		
+	}
+	
+	buy_card() {
+		
+		if(Cards[this.position].can_buy == true && Cards[this.position].buy_cost <= this.money) { // Czy mogę kupić
+			this.cards_owned.push(Cards[this.position]);
+			Cards[this.position].can_buy = false;
+
+			if(this.colors_owned.includes(Colors[3])) {
+				document.getElementById("console-output").innerHTML += "Kupiłeś kartę: " + Cards[this.position].name + " za " + Cards[this.position].buy_cost + "$<br>";
+				document.getElementById("console-output").innerHTML += "<b>Efekt pomarańczowy aktywowany. Twoje upośledzenie sprawia że płacisz połowę kwoty<b><br>";
+				this.money -= Cards[this.position].buy_cost / 2;
+			} else {
+				document.getElementById("console-output").innerHTML += "Kupiłeś kartę: " + Cards[this.position].name + " za " + Cards[this.position].buy_cost + "$<br>";
+				this.money -= Cards[this.position].buy_cost;
+			}
+			
+			this.check_full(); // Sprawdza czy mam komplet
+			
+		} else if (Cards[this.position].can_buy == false) {
+			
+			document.getElementById("console-output").innerHTML += "Nie można kupić tej karty <br>";
+			
+		} else if (Cards[this.position].buy_cost > this.money) {
+			
+			document.getElementById("console-output").innerHTML += "Nie stać cię lol <br>";
+		}
+		
+		game_info();
+	}
+	
+	check_full() {
+
+		for(let i = 0; i < Colors.length; i++) {
+
+			let count = 0;
+
+			for(let j = 0; j < Colors[i].length; j++) { // Sprawdzanie czy posiadam komplet
+				if(this.cards_owned.includes(Colors[i][j])) {
+					count++;
+				}
+			}
+
+			if(count == Colors[i].length && !this.colors_owned.includes(Colors[i])) { // dodawanie kompletu
+				document.getElementById("console-output").innerHTML += "<b>Zdobyłeś komplet<i> " + Colors[i][0].color + "</i></b><br>";
+				this.colors_owned.push(Colors[i]);
+				
+				switch(Colors[i][0].color) { // efekt kompletu
+					case "brown":
+						document.getElementById("console-output").innerHTML += "<b>Kwestionujesz sens życia swojego przeciwnika. Zależnie od jego reakcji wygrywasz automatycznie lub absolutnie nic się nie dzieje</b><br>"; // meme
+						document.getElementById("console-output").innerHTML += "<b>Efekt brązowy aktywowany. Ładnie się zapytaj czy twój przeciwnik chce się poddać</b><br>";
+						break;
+					case "lightblue":
+						document.getElementById("console-output").innerHTML += "<b>Policja się z tobą zgadza. Wszystko to wina Kacpra</b><br>"; // Darmowe wyjście z więzienia
+						break;
+					case "pink":
+						document.getElementById("console-output").innerHTML += "<b>Speedwagon jest ci wdzięczny i funduje twoją walkę</b><br>"; // Hajs
+						document.getElementById("console-output").innerHTML += "<b>Efekt różowy aktywowany. +2000$</b><br>";
+						this.money += 2000;
+						break;
+					case "orange":
+						document.getElementById("console-output").innerHTML += "<b>Zdiagnozowano u ciebie upośledzenie umysłowe</b><br>"; // Redukjca kosztów
+						break;
+					case "red":
+						document.getElementById("console-output").innerHTML += "<b>Jesteś mianowany 'cyberpunkowym edgelordem'</b><br>"; // Dodatkowe życie za utratę koloru
+						break;
+					case "yellow":
+						document.getElementById("console-output").innerHTML += "<b>Kościół katolicki a zwłaszcza papież jest tobą zainteresowany. Pytanie brzmi czy to szczęścię czy może klątwa?</b><br>"; // Pozytywne i negatywne event zależne od szczęścia
+						break;
+					case "green":
+						document.getElementById("console-output").innerHTML += "<b>Zostajesz mianowany 'towarzyszem specjalnym'. Moc komunizmu rośnie</b><br>"; // Karty koloru zielonego pobierają większą kwotę
+						document.getElementById("console-output").innerHTML += "<b>Efekt zielony aktywowany. Koszt wizyty towaryszy rośnie pięciokrotnie</b><br>";
+						Cards[31].visit_cost *= 5;
+						Cards[32].visit_cost *= 5;
+						Cards[34].visit_cost *= 5; //tooltip update
+						break;
+					case "blue":
+						document.getElementById("console-output").innerHTML += "<b>Popadasz w szaleństwo po obejrezniu tego gówna</b><br>"; // TAK
+						break;
+					case "black":
+						document.getElementById("console-output").innerHTML += "<b>Kto nie lubi pociągów?</b><br>"; // Podwaja twój maksymalny rzut
+						this.roll_max = 12;
+						break;
+					default: 
+						break;
+				}
+			} else if (count != Colors[i].length && this.colors_owned.includes(Colors[i])) { // utrata kompletu
+				let index  = this.colors_owned.indexOf(Colors[i]);
+				switch(Colors[i][0].color) { 
+					case "brown":
+						document.getElementById("console-output").innerHTML += "<b>Komplet<i> " + Colors[i][0].color + " </i>utracony</b><br>"; 
+						this.colors_owned.splice(index, 1);
+						break;
+					case "lightblue":
+						document.getElementById("console-output").innerHTML += "<b>Komplet<i> " + Colors[i][0].color + " </i>utracony</b><br>"; 
+						this.colors_owned.splice(index, 1);
+						break;
+					case "pink":
+						document.getElementById("console-output").innerHTML += "<b>Komplet<i> " + Colors[i][0].color + " </i>utracony</b><br>";
+						this.colors_owned.splice(index, 1);
+						break;
+					case "orange":
+						document.getElementById("console-output").innerHTML += "<b>Komplet<i> " + Colors[i][0].color + " </i>utracony</b><br>";
+						this.colors_owned.splice(index, 1);
+						break;
+					case "red":
+						document.getElementById("console-output").innerHTML += "<b>Komplet<i> " + Colors[i][0].color + " </i>utracony</b><br>";
+						this.colors_owned.splice(index, 1);
+						break;
+					case "yellow":
+						document.getElementById("console-output").innerHTML += "<b>Komplet<i> " + Colors[i][0].color + " </i>utracony</b><br>";
+						this.colors_owned.splice(index, 1);
+						break;
+					case "green":
+						document.getElementById("console-output").innerHTML += "<b>Komplet<i> " + Colors[i][0].color + " </i>utracony</b><br>"; 
+						Cards[31].visit_cost /= 5;
+						Cards[32].visit_cost /= 5;
+						Cards[34].visit_cost /= 5;
+						this.colors_owned.splice(index, 1);
+						break;
+					case "blue":
+						document.getElementById("console-output").innerHTML += "<b>Komplet<i> " + Colors[i][0].color + " </i>utracony</b><br>";
+						this.colors_owned.splice(index, 1);
+						break;
+					case "black":
+						document.getElementById("console-output").innerHTML += "<b>Komplet<i> " + Colors[i][0].color + " </i>utracony</b><br>";
+						this.roll_max = 6;
+						this.colors_owned.splice(index, 1);
+						break;
+					default: 
+						break;
+				}
+			}
+		}
+
+	}
+	
+	dice_throw() {
+		if(!this.did_throw) {
+			
+			this.did_throw = true; //Rzuty kostkami
+		
+			this.first_throw = this.dice();
+			this.second_throw = this.dice();
+			
+			if(this.colors_owned.includes(Colors[5])) {
+				this.luck = this.luck_dice();
+			}
+			
+			if(!this.is_in_prison) { //Więzienie
+				this.position += this.first_throw + this.second_throw;
+			} else if (this.is_in_prison) {
+				document.getElementById("console-output").innerHTML += "Jesteś w więzieniu lol<br>"
+			}
+			
+			if(this.colors_owned.includes(Colors[8])) {
+				document.getElementById("console-output").innerHTML += "<b>Efekt czarny aktywowany. maksymalny rzut podwojony</b><br>";
+			}
+			document.getElementById("console-output").innerHTML += "Rzut1: " + this.first_throw +  "<br>Rzut2: " + this.second_throw + "<br>";
+			
+			if(this.first_throw == this.second_throw) { // Logika Double
+
+				if(!this.is_in_prison) {
+					this.did_throw = false;
+					document.getElementById("console-output").innerHTML += "<b>Double! możesz ruczić ponownie</b><br>";
+				} else if (this.is_in_prison) {
+					document.getElementById("console-output").innerHTML += "<b>Wylazłeś brawo!</b><br>"
+					this.position += this.first_throw + this.second_throw;
+					this.is_in_prison = false;
+				}
+				
+			}
+			
+			if(this.position >= 39) { // Sprawdza czy przekorczyłeś start
+				this.position = this.position - 39;
+				document.getElementById("console-output").innerHTML += "<b>Przekroczyłeś start +200$ </b><br>"
+				this.money += 200;
+				if(this.colors_owned.includes(Colors[5]) && this.luck) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt żółty aktywowany. Papież cię błogosławi. Otrzymujesz dodatkowe 100$ za przejście przez start<b><br>";
+					this.money += 100;
+				} else if(this.colors_owned.includes(Colors[5]) && !this.luck) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt żółty aktywowany. Papież cię wyruchał. Tracisz 500$ za przejście przez start<b><br>";
+					this.money -= 500;
+				}
+			}
+			
+			document.getElementById("console-output").innerHTML += "Jesteś na karcie: " + Cards[this.position].name + "<br>";
+			
+			if(Cards[this.position].can_buy) { // money_informuje gracza o możliwości zakupu
+				document.getElementById("console-output").innerHTML += "Można ją kupić<br>"
+			} 
+			
+			document.getElementById("c" + this.position).appendChild(this.player);
+			
+				
+			this.card_event(Cards[this.position]); // Sprawdza eventy na karcie 
+		}
+		else {
+			document.getElementById("console-output").innerHTML += "Nie możesz więcej rzucać! <br>"
+		}
+		this.check_game_over();
+		game_info();
+	}
+	
+	card_event(card) {
+		if(!card.can_buy && !this.cards_owned.includes(card)) {
+			if(card.name == "Podatek") {
+				this.money -= 200;
+				document.getElementById("console-output").innerHTML += "<b>Zapłaciłeś podatek -200$ </b><br>"
+				if(this.colors_owned.includes(Colors[3])) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt pomarańczowy aktywowany. Twoje upośledzenie sprawia że płacisz połowę kwoty<b><br>";
+					this.money += 100;
+				}
+				if(this.colors_owned.includes(Colors[5]) && !this.luck) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt żółty aktywowany. Papież cię wyruchał. Płacisz dodadkowe 100$<b><br>";
+					this.money -= 100;
+				}
+			} else if(card.name == "Szansa" || card.name == "Skarb") {
+				document.getElementById("console-output").innerHTML += "<b>Zobaczmy co dostaniesz: </b><br>"
+				this.random_event();
+			} else if (card.name == "Policja!") {
+				document.getElementById("console-output").innerHTML += "<b>Policja uznała cię za zagrożenie dla społeczeństwa. Idziesz do więzienia<b><br>";
+				this.position = 10;
+				this.is_in_prison = true;
+				if(this.colors_owned.includes(Colors[1])) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt jasno niebieski aktywowany. Po drobnych wyjaśnieniach policja się z tobą zgadza że Kacper to większe zagrożenie. Opuszczasz więzienie<b><br>";
+					this.is_in_prison = false;
+				} else if(this.colors_owned.includes(Colors[5]) && this.luck) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt żółty aktywowany. Papież cię błogosławi. Policja zostawia cię w spokoju po wymówieniu paciorka. Opuszczasz więzienie<b><br>";
+					this.is_in_prison = false;
+				}
+				document.getElementById("c" + this.position).appendChild(this.player);
+			} else {
+				for(let i = 0; i < Players.length; i++) {
+					if(Players[i].cards_owned.includes(card) && !this.cards_owned.includes(card)) {
+						document.getElementById("console-output").innerHTML += "<b>Zapłaciłeś " + card.visit_cost + "$ dla gracza " + Players[i].id + "</b><br>";
+						if(this.colors_owned.includes(Colors[3])) {
+							document.getElementById("console-output").innerHTML += "<b>Efekt pomarańczowy aktywowany. Twoje upośledzenie sprawia że płacisz połowę kwoty<b><br>";
+							this.money -= card.visit_cost / 2;
+							Players[i].money += card.visit_cost / 2;
+						} else {
+							this.money -= card.visit_cost;
+							Players[i].money += card.visit_cost;
+						}
+					}
+				}
+			}
+		} 
+	}
+	
+	random_event() {
+		let max  = 7;
+		let min = 1;
+		let event = Math.floor(Math.random() * max + min);
+		switch(event) {
+			
+			case 1:
+				document.getElementById("console-output").innerHTML += "<b>NIE DLA PSA! Krzyczy jakiś debil</b><br>"
+				if(this.colors_owned.includes(Colors[5]) && this.luck) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt żółty aktywowany. Papież cię błogosławi. Jednak dla psa coś się znalazło. +69$<b><br>";
+					this.money += 69;
+				} else if(this.colors_owned.includes(Colors[7])) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt niebieski aktywowany. Patrzysz prosto w oczy temu debilowi który krzyczy jak debil. Twoje oczy robią się 'głebokie' a on spierdala przerażony i przy tym zostawiając swój portfel. +25$<b><br>";
+					this.money += 25;
+				}
+				break;
+				
+			case 2:
+				document.getElementById("console-output").innerHTML += "<b>Znalazłeś hajs na chodniku +100$</b><br>"
+				this.money += 100;
+				if(this.colors_owned.includes(Colors[5]) && this.luck) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt żółty aktywowany. Papież cię błogosławi. Znajdujesz dodatkowe 50$<b><br>";
+					this.money += 50;
+				} else if(this.colors_owned.includes(Colors[5]) && !this.luck) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt żółty aktywowany. Papież cię wyruchał. Hajs został użyty jako papaier toaletowy. -100$<b><br>";
+					this.money -= 100;
+				}
+				break;
+				
+			case 3:
+				document.getElementById("console-output").innerHTML += "<b>Nigerski książe jest ci wdzięczny -100$</b><br>"
+				this.money -= 100;
+				if(this.colors_owned.includes(Colors[3])) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt pomarańczowy aktywowany. Twoje upośledzenie sprawia że płacisz połowę kwoty<b><br>";
+					this.money += 50;
+				}
+				if(this.colors_owned.includes(Colors[5]) && this.luck) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt żółty aktywowany. Papież cię błogosławi. Inwestycja się zwraca +300$<b><br>";
+					this.money += 300;
+				}
+				break;
+				
+			case 4:
+				document.getElementById("console-output").innerHTML += "<b>Znalazłeś w sklepie body pillow i kwestionujesz swoją seksualność. -10$</b><br>";
+				this.position = 13;
+				this.money -= 10;
+				document.getElementById("console-output").innerHTML += "<b>Teleportujesz się na kartę: " + Cards[this.position].name + "</b><br>";
+				document.getElementById("c" + this.position).appendChild(this.player);
+				this.card_event(Cards[this.position]);
+				break;
+				
+			case 5:
+				document.getElementById("console-output").innerHTML += "<b>Policja uznała cię za mniejszość narodwą...</b><br>";
+				this.position = 30;
+				document.getElementById("c" + this.position).appendChild(this.player);
+				this.card_event(Cards[30]);
+				break;
+			
+			case 6:
+				document.getElementById("console-output").innerHTML += "<b>Spotykasz na ulicy rasistę. Płacisz 100$ za każdy komplet</b><br>";
+				let suma = 0;
+				for(let i = 0; i < this.colors_owned.length; i++) {
+					suma += 100;
+				}
+				if(this.colors_owned.includes(Colors[3]) && !this.colors_owned.includes(Colors[7])) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt pomarańczowy aktywowany. Twoje upośledzenie sprawia że płacisz połowę kwoty</b><br>";
+					this.money -= suma / 2;
+					document.getElementById("console-output").innerHTML += "<b>Zapłaciłeś " + suma / 2 + "$</b><br>";
+				} else {
+					this.money -= suma;
+					document.getElementById("console-output").innerHTML += "<b>Zapłaciłeś " + suma + "$<b><br>";
+					
+					if(this.colors_owned.includes(Colors[7])) {
+						document.getElementById("console-output").innerHTML += "<b>Efekt niebieski aktywowany. Płacąc rasistowi masz olśnienie. Przypierdalasz mu i kradniesz mu portfel. +100$ i odyskujesz stracone pieniądze</b><br>";
+						this.money += 100 + suma;
+					}
+				}
+				break;
+				
+			case 7:
+				document.getElementById("console-output").innerHTML += "<b>Przechodzisz obok torów. Widzisz jakąś depresyjną nastolatkę oraz nadjeżdzający pociąg</b><br>";
+				if(this.colors_owned.includes(Colors[7])) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt niebieski aktywowany. Mówisz sobie 'free real estate' i kradniesz jej portfel zanim została rozjechana przez pociąg. +100$</b><br>";
+					this.money += 100;
+				} else if (this.colors_owned.includes(Colors[5]) && this.luck) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt żółty aktywowany. Papież cię błogosławi. Objawa ci się jezus i ratujesz depresyjną nastolatkę. Okazuje się że nawet za bardzo zabić się nie chciała i daje ci 20$ w podziękowaniu<b><br>";
+				} else if (this.colors_owned.includes(Colors[5]) && !this.luck) {
+					document.getElementById("console-output").innerHTML += "<b>Efekt żółty aktywowany. Papież cię wyruchał. Objawa ci się jezus i ratujesz depresyjną nastolatkę. Okazuje się że bardzo chciała się zabić. Kopie cię w jaja i kradnie hajs. -50$<b><br>";
+					this.money -= 50;
+					if(this.colors_owned.includes(Colors[3])) {
+						document.getElementById("console-output").innerHTML += "<b>Efekt pomarańczowy aktywowany. Twoje upośledzenie sprawia że płacisz połowę kwoty</b><br>";
+						this.money += 25;
+						document.getElementById("console-output").innerHTML += "<b>Zapłaciłeś tylko 25$</b><br>";
+					} 
+				} else {
+					document.getElementById("console-output").innerHTML += "<b>Mówisz sobie 'życie' i obserwujesz redekoracje torów na kolor czerwony. Przecieraż łezkę banktontem i zapominasz o wydarzeniu. -10$</b><br>";
+					this.money -= 10;
+				}
+				break;
+			default: 
+				document.getElementById("console-output").innerHTML += "Event error<br>"
+				break;
+		}
+	}
+	
+	end() {
+		this.did_throw = false;
+	}
+	
+	dice() {
+		return Math.floor(Math.random() * this.roll_max + 1);
+	}
+	
+	luck_dice() {
+		let roll = Math.floor(Math.random() * 2);
+		if (roll) {
+			return true;
+		} else {
+			return false
+		}
+	}
+	
+	check_game_over() {
+		
+		if(this.money < 0 && !this.colors_owned.includes(Colors[4]) && !this.colors_owned.includes(Colors[7])) {
+			
+			document.getElementById("console-output").innerHTML += "<b> Gracz " + this.id + " teoretycznie odpada z gry. Jestem zaleniwy by zrobić to porządnie LOL</b><br>";
+			
+		} else if (this.colors_owned.includes(Colors[4]) && this.money < 0) {
+			
+			document.getElementById("console-output").innerHTML += "<b>Efekt czerwony aktywowany. Byłeś bliski porażki lecz poświęcasz swoich przyjaciół by dostać drugą szansę. +1000$<b><br>";
+			this.money = 1000;
+			this.remove_card(Cards[21]);
+			this.remove_card(Cards[22]);
+			this.remove_card(Cards[24]);
+			
+		} else if (this.colors_owned.includes(Colors[7]) && this.money < 0) {
+			
+			document.getElementById("console-output").innerHTML += "<b>Efekt niebieski aktywowany.<br> 'Jeszcze jeden odcinkek' mruczysz coś w tym stylu gdy odrzucasz losową kartę w zamaian za drugą szansę<b><br>";
+			let choice = Math.floor(Math.random() * this.cards_owned.length);
+			document.getElementById("console-output").innerHTML += "<b>Odrzuciłeś " + this.cards_owned[choice].name + " i otrzymujesz jej wartość jako pieniądze<b><br>";
+			this.money = this.cards_owned[choice].buy_cost;
+			this.remove_card(Cards[choice]);
+			
+		}
+	}
+	
+	remove_card(card) {
+		
+		card.can_buy = true;
+		
+		let index = this.cards_owned.indexOf(card);
+		this.cards_owned.splice(index, 1);
+		this.check_full();
+		game_info();
+	}
+	
+	add_card(card) {
+		
+		card.can_buy = false;
+		
+		this.cards_owned.push(card);
+		this.check_full();
+		game_info();
+	}
+	
+	trade(trade_partner, my_offer, his_offer) {
+		for(let i = 0; i < my_offer.length; i++) {
+			this.remove_card(my_offer[i]);
+			Players[trade_partner].add_card(my_offer[i]);
+		}
+		for(let i = 0; i < his_offer.length; i++) {
+			this.add_card(his_offer[i]);
+			Players[trade_partner].remove_card(his_offer[i]);
+		}
+		document.getElementById("console-output").innerHTML += "Handel zakończony<br>";
+	}
+}

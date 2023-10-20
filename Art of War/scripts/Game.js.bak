@@ -1,0 +1,210 @@
+class Game {
+	
+	constructor() {
+		this.game_innit();
+	}
+	
+	game_innit() {
+		
+		new State("Iceland", [200, 100], [1, 32]); //0
+		new State("Southern Norway", [450, 250], [0, 2, 3, 6]); //1
+		new State("Northern Norway", [520, 100], [1, 3, 4]); //2
+		new State("Northern Sweden", [550, 150], [1, 2, 4, 6]); //3
+		new State("Northern Finland", [650, 100], [2, 3, 5, 83]); //4
+		new State("Southern Finland", [650, 200], [4, 83]); //5
+		new State("Central Sweden", [530, 300], [1, 3, 7]); //6
+		new State("Southern Sweden", [520, 360], [6, 8]); //7
+		new State("Denmark", [440, 360], [7, 9]); //8
+		
+		new Country(0, "Nordic Empire", "lightblue", [ States[0], States[1], States[2], States[3], States[4], States[5], States[6], States[7], States[8] ]);
+		
+		new State("Northern Germany", [470, 450], [8, 10, 11, 15]); //9
+		new State("Eastern Germany", [500, 480], [9, 13, 14, 15, 64]); //10
+		new State("Western Germany", [420, 460], [9, 12, 15, 16]); //11
+		new State("Netherland", [370, 480], [11, 16, 18]); //12
+		new State("Northern Poland", [550, 440], [10, 14, 72, 73]); //13
+		new State("Silesia", [570, 520], [10, 13, 64, 65, 72, 75]); //14
+		new State("Central Germany", [450, 520], [9, 10, 11, 16, 17, 64]); //15
+		new State("Rhineland", [390, 530], [11, 15, 17, 18, 22]); //16
+		new State("Bavaria", [460, 590], [15, 16, 22, 23, 63, 64]); //17
+		
+		new Country(1, "Order of Germania", "grey", [ States[9], States[10], States[11], States[12], States[13], States[14], States[15], States[16], States[17] ]);
+		
+		new State("Belgium", [350, 520], [12, 16, 19, 22]); //18
+		new State("Normandy", [280, 550], [18, 20, 21, 22, 27]); //19
+		new State("Brittany", [200, 580], [19, 21]); //20
+		new State("Central France", [270, 650], [19, 20, 22, 23, 24, 25]); //21
+		new State("Alsace", [370, 600], [16, 17, 18, 19, 21, 23]); //22
+		new State("Switzerland", [390, 640], [17, 21, 22, 25, 26, 63]); //23
+		new State("South-West France", [240, 720], [21, 25, 36, 37]); //24
+		new State("South-East France", [340, 730], [21, 23, 24, 26]); //25
+		new State("Sardinia-Piedmont", [400, 700], [23, 25, 47, 49]); //26
+		
+		new Country(2, "Frankereich", "blue", [ States[18], States[19], States[20], States[21], States[22], States[23], States[24], States[25], States[26] ]);
+		
+		new State("London", [270, 490], [19, 28, 29]); //27
+		new State("Cornwall", [210, 495], [27, 29]); //28
+		new State("Central England", [260, 460], [27, 28, 30, 31]); //29
+		new State("Wales", [220, 450], [29, 31]); //30
+		new State("Northern England", [250, 420], [29, 30, 32]); //31
+		new State("Scotland", [250, 370], [0, 31, 33]); //32
+		new State("Northern Ireland", [190, 380], [32, 34, 35]); //33
+		new State("Western Ireland", [140, 410], [33, 35]); //34
+		new State("Eastern Ireland", [170, 420], [33, 34]); //35
+		
+		new Country(3, "Democratic Republic of Red Pandas", "red", [ States[27], States[28], States[29], States[30], States[31], States[32], States[33], States[34], States[35] ]);
+		
+		new State("Northern Spain", [130, 750], [24, 37, 38, 40]); //36
+		new State("Eastern Spain", [200, 810], [24, 36, 38, 39]); //37
+		new State("Central Spain", [140, 820], [36, 37, 39, 40]); //38
+		new State("Southern Spain", [100, 900], [37, 38, 40, 41]); //39
+		new State("Portugal", [20, 820], [36, 38, 39]); //40
+		new State("Morocco", [70, 950], [39, 42]); //41
+		new State("Western Algeria", [220, 980], [41, 43]); //42
+		new State("Eastern Algeria", [300, 970], [42, 44]); //43
+		new State("Tunesia", [430, 980], [43, 45, 48]); //44
+		
+		new Country(4, "Pirate Federation", "yellow", [ States[36], States[37], States[38], States[39], States[40], States[41], States[42], States[43], States[44] ]);
+
+		new State("Sardinia", [520, 940], [44, 46]); //45
+		new State("Southern Italy", [550, 850], [45, 47]); //46
+		new State("Central Italy", [480, 770], [26, 46, 48, 49]); //47
+		new State("Central Ilands", [400, 840], [44, 47]); //48
+		new State("Venice", [470, 700], [26, 47, 50, 63]); //49
+		new State("Croatia", [540, 680], [49, 51, 52, 63, 67]); //50
+		new State("Bosnia", [590, 730], [50, 52, 53]); //51
+		new State("Serbia", [660, 720], [50, 51, 53, 67, 68, 69, 71]); //52
+		new State("Southern Balkans", [670, 790], [51, 52, 54, 55, 71]); //53
+		
+		new Country(5, "Italia", "green", [ States[45], States[46], States[47], States[48], States[49], States[50], States[51], States[52], States[53] ]);
+		
+		new State("Southern Greece", [700, 870], [53, 55]); //54
+		new State("Northern Greece", [740, 820], [53, 54, 56, 71]); //55
+		new State("Constantinople", [820, 780], [55, 57, 58, 71]); //56
+		new State("Northern Turkey", [930, 790], [56, 58, 59, 60]); //57
+		new State("Western Turkey", [850, 840], [56, 57, 59]); //58
+		new State("Southern Turkey", [940, 880], [57, 58, 60, 61]); //59
+		new State("Eastern Turkey", [1080, 750], [57, 59, 61, 62, 87]); //60
+		new State("Syria", [1050, 900], [59, 60, 62]); //61
+		new State("Arabia", [1150, 930], [60, 61, 87]); //62
+		
+		new Country(6, "Byzantium", "indigo", [ States[54], States[55], States[56], States[57], States[58], States[59], States[60], States[61], States[62] ]);
+		
+		new State("Austria", [560, 610], [17, 49, 50, 64, 65, 66, 67]); //63
+		new State("Western Czechia", [520, 540], [10, 14, 15, 17, 63, 65]); //64
+		new State("Eastern Czechia", [570, 570], [14, 63, 64, 66]); //65
+		new State("Slovatia", [620, 580], [63, 65, 67, 75, 76]); //66
+		new State("Hungary", [630, 630], [50, 52, 63, 66, 68, 76]); //67
+		new State("Transylvania", [720, 640], [52, 67, 69, 76]); //68
+		new State("Romania", [760, 700], [52, 68, 70, 71]); //69
+		new State("Moldova", [800, 600], [69, 76, 88, 89]); //70
+		new State("Bulgaria", [750, 760], [52, 53, 55, 56, 69]); //71
+		
+		new Country(7, "Australia", "teal", [ States[63], States[64], States[65], States[66], States[67], States[68], States[69], States[70], States[71] ]);
+		
+		new State("Central Poland", [600, 460], [13, 14, 73, 74, 75]); //72
+		new State("Prussia", [650, 400], [13, 72, 74, 80]); //73
+		new State("Eastern Poland", [660, 460], [72, 73, 75, 77]); //74
+		new State("Southern Poland", [640, 530], [14, 66, 72, 74, 76]); //75
+		new State("Western Ukraine", [740, 540], [66, 67, 68, 70, 76, 77, 79, 88]); //76
+		new State("Western Belarus", [710, 450], [74, 76, 78, 79, 80]); //77
+		new State("Northern Belarus", [760, 400], [77, 79, 80, 81, 82]); //78
+		new State("Southern Belarus", [790, 450], [76, 77, 88, 81]); //79
+		new State("Lithuania", [690, 380], [73, 77, 78, 82]); //80
+		
+		new Country(8, "Suslandia", "brown", [ States[72], States[73], States[74], States[75], States[76], States[77], States[78], States[79], States[80] ]);
+		
+		new State("Western Russia", [850, 330], [78, 79, 82, 83, 84, 85, 86, 88]); //81
+		new State("Baltics", [700, 320], [78, 80, 81]); //82
+		new State("Karelia", [740, 140], [4, 5, 81]); //83
+		new State("Siberia", [960, 100], [81, 85]); //84
+		new State("Eastern Russia", [1100, 300], [81, 84, 86]); //85
+		new State("Southern Russia", [1060, 570], [81, 85, 87, 88, 89]); //86
+		new State("Caucas", [1150, 670], [60, 62, 86]); //87
+		new State("Eastern Ukraine", [850, 510], [70, 76, 79, 81, 86, 89]); //88
+		new State("Crimea", [930, 630], [70, 86, 88]); //89
+		
+		new Country(9, "Tsardom of Kacper", "black", [ States[81], States[82], States[83], States[84], States[85], States[86], States[87], States[88], States[89] ]);
+		
+		for(let i = 0; i < Countries.length; i++) {
+			Countries[i].get_borders();
+		}
+		
+		setInterval(this.update_game, game_speed);
+		setInterval(this.update_statistics, game_speed);
+	}
+	
+	determine_avg() {
+		let industry_sum = 0;
+		let military_sum = 0;
+		let income_sum = 0;
+		
+		for(let i = 0; i < Countries.length; i++) {
+			industry_sum += Countries[i].industry;
+			military_sum += Countries[i].military;
+			income_sum += Countries[i].income;
+		}
+		
+		industry_avg = int(industry_sum / Countries.length);
+		military_avg = int(military_sum / Countries.length);
+		income_avg = int(income_sum / Countries.length);
+		document.getElementById("general_board").innerHTML += "<tr><td>" + industry_avg + "</td><td>" + military_avg + "</td><td>" + income_avg + "$</td></tr>";
+	}
+	
+	update_game() {
+		ctx.clearRect(0 , 0, board_width, board_height);
+		ctx.drawImage(img, 0, 0);
+		
+		function update_countries(country) {
+			if(country.states_owned.length > 0) {
+				country.update_states(country.color);
+				country.turn();
+				country.update_states(country.color);
+			}
+		}
+		Countries.forEach(update_countries);
+		
+		ctx.fillStyle = "black";
+		ctx.fillText("Turn: " + turn, 10, 30);
+		
+		turn += 1;
+	}
+	
+	update_statistics() {
+		document.getElementById("leaderboard").innerHTML = "<tr><th>Counrty Name</th><th>IndustryLevel</th><th>MilitaryPower</th><th>StatesOwned</th><th>Balance</th></tr>";
+		document.getElementById("general_board").innerHTML = "<tr><th>AvgIndustryLevel</th><th>AvgMilitaryPower</th><th>AvgBalance</th></tr>";
+		
+		function update_lead(country) {
+			country.update_leaderboard();
+		}
+		
+		Countries.forEach(update_lead);
+		
+		function determine_avg() {
+			let industry_sum = 0;
+			let military_sum = 0;
+			let income_sum = 0;
+			
+			for(let i = 0; i < Countries.length; i++) {
+				industry_sum += Countries[i].industry;
+				military_sum += Countries[i].military;
+				income_sum += Countries[i].income;
+			}
+			
+			industry_avg = parseInt(industry_sum / Countries.length);
+			military_avg = parseInt(military_sum / Countries.length);
+			income_avg = parseInt(income_sum / Countries.length);
+			document.getElementById("general_board").innerHTML += "<tr><td>" + industry_avg + "</td><td>" + military_avg + "</td><td>" + income_avg + "$</td></tr>";
+		}
+		
+		determine_avg();
+	}
+}
+
+function determine_borders() {
+	for(let i = 0; i < Countries.length; i++) {
+		Countries[i].get_borders();
+	}
+}
+
+new Game();

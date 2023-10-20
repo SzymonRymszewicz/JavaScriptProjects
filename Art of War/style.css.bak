@@ -1,0 +1,13 @@
+#game_board, table{
+	border: 5px solid black;
+	float: left;
+}
+table {
+	background-color: black;
+	font-family: Arial;
+	text-align: center;
+	color: white;
+}
+body {
+	background-color: grey;
+}

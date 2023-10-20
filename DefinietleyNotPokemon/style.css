@@ -1,0 +1,33 @@
+#canv {
+	border: 5px solid black;
+	display: block; 
+	margin: 0 auto;
+}
+
+table {
+	background-color: black;
+	font-family: Arial;
+	text-align: center;
+	color: white;
+}
+
+body {
+	background-color: grey;
+}
+
+#console {
+	text-align: center;
+	font-family: cursive;
+	line-height: 90px;
+	font-size: 30px;
+	
+	background-color: white;
+	border: 5px solid black;
+	color: black;
+	
+	width: 1000px;
+	height: 100px;
+	
+	display: block; 
+	margin: 0 auto;
+}

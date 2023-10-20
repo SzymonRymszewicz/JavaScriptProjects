@@ -1,0 +1,16 @@
+let player_turn = 1;
+
+let Players = [];
+let Cards = [];
+
+let Brown = [];
+let LightBlue = [];
+let Pink = [];
+let Orange = [];
+let Red = [];
+let Yellow = [];
+let Green = [];
+let Blue = [];
+let Black = [];
+
+let Colors = [Brown, LightBlue, Pink, Orange, Red, Yellow, Green, Blue, Black];

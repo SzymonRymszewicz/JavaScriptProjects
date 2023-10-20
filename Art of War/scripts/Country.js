@@ -1,0 +1,194 @@
+class Country {
+	constructor(id, name, color, states_owned) {
+		this.id = id
+		this.name = name;
+		this.color = color;
+		this.states_owned = states_owned;
+		this.border = [];
+		
+		this.industry = 1;
+		this.military = 1;
+		this.income = parseInt(this.industry * this.states_owned.length / this.military);
+		
+		this.industry_upgrade_cost = this.industry * 5;
+		this.military_upgrade_cost = this.military * 10;
+		
+		for(let i = 0; i < this.states_owned.length; i++) {
+			this.states_owned[i].set_ownership(this.id);
+		}
+		
+		Countries.push(this)
+		//console.log(this.name + " estabilished");
+	}
+	
+	update_states() {
+		for(let i = 0; i < this.states_owned.length; i++) {
+			this.states_owned[i].update_state(this.color);
+		}
+	}
+	
+	get_borders() {
+		let border_states = []
+		let border_countries = []
+		for(let i = 0; i < this.states_owned.length; i++) {
+			for(let j = 0; j < this.states_owned[i].border_states.length; j++) {
+				if(!this.states_owned.includes(States[this.states_owned[i].border_states[j]])) {
+					border_states.push(States[this.states_owned[i].border_states[j]]);
+					border_countries.push(Countries[States[this.states_owned[i].border_states[j]].ownership]);
+				}
+			}
+		}
+		
+		function removeDuplicates(arr) {
+			return arr.filter((item, index) => arr.indexOf(item) === index);
+		}
+		
+		border_states = removeDuplicates(border_states);
+		border_countries = removeDuplicates(border_countries);
+		
+		for(let i = 0; i < border_countries.length; i++) {
+			let border = [];
+			border.push(border_countries[i]);
+			for(let j = 0; j < border_states.length; j++) {
+				if(border_countries[i].id == border_states[j].ownership) {
+					border.push(border_states[j]);
+				}
+			}
+			this.border.push(border); // [Country, State, State...]
+		}
+	}
+	
+	turn() {
+		
+		if(this.income > 0) { 
+			let country_focus = Math.floor(Math.random() * 5 + 1)
+			
+			switch(country_focus) {
+				case 1:
+				case 2: //Industrial focus 40% chance
+					if(this.income >= this.industry_upgrade_cost) {
+						this.industry += 5;
+					} else if(this.military > military_avg && this.military > 1){
+						this.industry += 5;
+						this.military -= 1;
+					} else {
+						this.industry += 2;
+					}
+					break;
+				case 3:
+				case 4: //Military focus 40% chance
+					if(this.income >= this.military_upgrade_cost) {
+						this.military += 1;
+					} else if(this.income >= this.industry_upgrade_cost) {
+						this.industry += 5;
+					} else {
+						this.industry += 1;
+					}
+					break;
+				case 5: //Expansion focus 20% chance
+					let target = this.determine_target();
+					if(target[0].military < this.military && this.military > 1) { // attack if stronger
+						this.attack(target);
+					} else if(target[0].military == this.military) {
+						let choice = Math.floor(Math.random() * 2 + 1) // 50% chance for an attack if equal
+						switch(choice) {
+							case 1:
+								if(this.military > 1) {
+									this.attack(target);
+								}
+								break;
+							case 2:
+								if(this.income >= this.military_upgrade_cost) {
+									this.military += 1;
+								} else {
+									this.industry += 1;
+								}
+								break;
+						}
+					} else {
+						let choice = Math.floor(Math.random() * 5 + 1) // 20% chance for an attack if weaker
+						switch(choice) {
+							case 1:
+								if(this.military > 1) {
+									this.attack(target);
+								}
+								break;
+							case 2:
+							case 3:
+							case 4:
+							case 5:
+								if(this.income >= this.military_upgrade_cost) {
+									this.military += 1;
+								} else {
+									this.industry += 1;
+								}
+								break;
+						}
+					}
+					break;
+			}
+		} else if(this.military > 1) {
+			this.military -= 1;
+		} else {
+			this.industry += 1;
+		}
+		
+		this.income = parseInt(this.industry * this.states_owned.length / this.military);
+		this.industry_upgrade_cost = this.industry * 5;
+		this.military_upgrade_cost = this.military * 10;
+	}
+	
+	attack(target) {
+		let attack_roll = Math.floor(Math.random() * 3 + 1);
+		attack_roll += this.military;
+		let defense_roll = Math.floor(Math.random() * 3 + 1);
+		defense_roll += target[0].military;
+		
+		let outcome = defense_roll - attack_roll;
+
+		if(outcome < 0) { //Attack succesful
+			this.military -= 1;
+			this.take_state(target);
+		} else if(outcome == 0) { //Draw
+			this.military -= 1;
+		} else if(outcome > 0) { //Attack failed
+			this.military -= 1;
+			this.industry -= 5;
+		}
+	}
+	
+	take_state(target) {
+		
+		console.log(this.name + " took " + target[1].name + " from " + target[0].name);
+		
+		target[1].ownership = this.id;
+		this.states_owned.push(target[1]);
+		
+		let index = target[0].states_owned.indexOf(target[1]);
+		target[0].states_owned.splice(index, 1);
+		
+		for(let i = 0; i < Countries.length; i++) {
+			Countries[i].get_borders();
+		}
+		
+	}
+	
+	determine_target() {
+		let target = [];
+		
+		let min = military_avg + this.military;
+		for(let i = 0; i < this.border.length; i++) {
+			if(this.border[i][0].military <= min && this.border[i][0].states_owned.length > 0) {
+				min = this.border[i][0].military;
+				target = [];
+				target.push(this.border[i][0]);
+				target.push(this.border[i][1]);
+			}
+		}
+		return target;
+	}
+	
+	update_leaderboard() {
+		document.getElementById("leaderboard").innerHTML += "<tr><td>" + this.name + " (" + this.color + ")</td><td>" + this.industry + "</td><td>" + this.military + "</td><td>" + this.states_owned.length + "</td><td>" + this.income + "$</td></tr>";
+	}
+}
